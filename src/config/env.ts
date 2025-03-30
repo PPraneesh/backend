@@ -12,11 +12,12 @@ const env = {
   FRONTEND_URL: isDev ? "http://localhost:5173" : getEnv("FRONTEND_URL_PROD"),
   ADMIN_URL: isDev ? "http://localhost:5174" : getEnv("ADMIN_URL_PROD"),
   PORT: getEnv("PORT", "8080"),
-  
+
   // firebase collections
   REGISTRATIONS_COLLECTION: "participants",
   STATS_COLLECTION: "stats",
   FEEDBACK_COLLECTION: "feedbacks",
+  ADMIN_USERS_COLLECTION: "adminUsers",
 
   // google cloud credentials for storage
   GOOGLE_CLOUD_PROJECT_ID: getEnv("GOOGLE_CLOUD_PROJECT_ID"),

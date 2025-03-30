@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
+import { db } from "../config/db.config";
+
+type DecodedToken = jwt.JwtPayload & {
+  userId: string;
+  access: string;
+};
 
 export const requireAuth = (req: Request, _: Response, next: NextFunction) => {
   try {
@@ -20,10 +26,29 @@ export const requireAuth = (req: Request, _: Response, next: NextFunction) => {
       return next(error);
     }
 
-    jwt.verify(token, env.JWT_SECRET as string, (err, _) => {
+    jwt.verify(token, env.JWT_SECRET as string, async (err, decoded) => {
       if (err) {
         return next("Token invalid");
-      } else next();
+      } else {
+        const decodedToken = decoded as DecodedToken;
+        const userId = decodedToken.userId;
+
+        // this can be stale, so take the "access" from the db
+        const adminUsersCollection = db.collection(env.ADMIN_USERS_COLLECTION);
+        const userDoc = await adminUsersCollection.doc(userId).get();
+        if (!userDoc.exists || !userDoc.data()) {
+          return next("User does not exist");
+        }
+
+        const userData = userDoc.data();
+        if (!userData || !userData.access) {
+          return next("Token invalid");
+        }
+
+        req.body.userId = userId;
+        req.body.access = userData.access;
+        next();
+      }
     });
   } catch (error) {
     next("Token invalid");
