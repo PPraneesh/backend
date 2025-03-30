@@ -17,7 +17,7 @@ const env = {
   REGISTRATIONS_COLLECTION: "participants",
   STATS_COLLECTION: "stats",
   FEEDBACK_COLLECTION: "feedbacks",
-  ADMIN_USERS_COLLECTION: "adminUsers",
+  ADMIN_USERS_COLLECTION: "admins",
 
   // google cloud credentials for storage
   GOOGLE_CLOUD_PROJECT_ID: getEnv("GOOGLE_CLOUD_PROJECT_ID"),
